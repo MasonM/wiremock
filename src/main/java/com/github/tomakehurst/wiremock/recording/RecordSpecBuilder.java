@@ -16,6 +16,7 @@
 package com.github.tomakehurst.wiremock.recording;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
+import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 
@@ -29,6 +30,7 @@ import static java.util.Arrays.asList;
 public class RecordSpecBuilder {
 
     private String targetBaseUrl;
+    private ResponseDefinition proxyResponse;
     private RequestPatternBuilder filterRequestPatternBuilder;
     private List<UUID> filterIds;
     private Map<String, CaptureHeadersSpec> headers = newLinkedHashMap();
@@ -42,6 +44,11 @@ public class RecordSpecBuilder {
 
     public RecordSpecBuilder forTarget(String targetBaseUrl) {
         this.targetBaseUrl = targetBaseUrl;
+        return this;
+    }
+
+    public RecordSpecBuilder withProxyResponse(ResponseDefinition proxyResponse) {
+        this.proxyResponse  = proxyResponse;
         return this;
     }
 
@@ -110,6 +117,7 @@ public class RecordSpecBuilder {
 
         return new RecordSpec(
             targetBaseUrl,
+            proxyResponse,
             filters,
             headers.isEmpty() ? null : headers,
             responseDefinitionBodyMatcher,
