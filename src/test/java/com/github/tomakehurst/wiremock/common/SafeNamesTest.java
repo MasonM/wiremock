@@ -4,13 +4,14 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.Test;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class SafeNamesTest {
+
+    private static final String TEST_BODY = "[1]";
+    private static final String TEST_BODY_FINGERPRINT = "180e7070d8425721";
 
     @Test
     public void generatesNameFromStubNameWhenPresent() {
@@ -44,6 +45,52 @@ public class SafeNamesTest {
     public void generatesNameFromNameWithCharactersSafeForFilenames() {
         String output = SafeNames.makeSafeName("ẄǏŔe mȎČǨs it!");
         assertThat(output, is("wire-mocks-it"));
+    }
+
+    @Test
+    public void generatesNameWhenStubUrlHasJsonExtension() {
+        StubMapping stubMapping = WireMock.get("/foo/bar.json")
+            .willReturn(ok(TEST_BODY))
+            .build();
+        String expectedFilename = "foobarjson-" + TEST_BODY_FINGERPRINT + ".json";
+        assertThat(SafeNames.makeSafeBodyFileName(stubMapping), is(expectedFilename));
+    }
+
+    @Test
+    public void generatesNameWhenStubUrlHasTxtExtension() {
+        StubMapping stubMapping = WireMock.get("/foo/bar.txt")
+            .willReturn(ok(TEST_BODY))
+            .build();
+        String expectedFilename = "foobartxt-" + TEST_BODY_FINGERPRINT + ".txt";
+        assertThat(SafeNames.makeSafeBodyFileName(stubMapping), is(expectedFilename));
+    }
+
+    @Test
+    public void generatesNameWhenStubHasJsonContentTypeHeader() {
+        StubMapping stubMapping = WireMock.get("/foo.txt")
+            .willReturn(okForContentType("application/json", TEST_BODY))
+            .build();
+        String expectedFilename = "footxt-" + TEST_BODY_FINGERPRINT + ".json";
+        assertThat(SafeNames.makeSafeBodyFileName(stubMapping), is(expectedFilename));
+    }
+
+    @Test
+    public void generatesNameWhenStubHasXmlContentTypeHeader() {
+        StubMapping stubMapping = WireMock.get("/foo.txt")
+            .willReturn(okForContentType("application/xml", TEST_BODY))
+            .build();
+        String expectedFilename = "footxt-" + TEST_BODY_FINGERPRINT + ".xml";
+        assertThat(SafeNames.makeSafeBodyFileName(stubMapping), is(expectedFilename));
+    }
+
+    @Test
+    public void determinesFileNameProperlyWithNamedStubMapping() {
+        StubMapping stubMapping = WireMock.get("/foo")
+            .willReturn(ok(TEST_BODY))
+            .withName("TEST NAME!")
+            .build();
+        String expectedFilename = "test-name-" + TEST_BODY_FINGERPRINT + ".json";
+        assertThat(SafeNames.makeSafeBodyFileName(stubMapping), is(expectedFilename));
     }
 
     @Test

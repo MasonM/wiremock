@@ -16,9 +16,8 @@
 package com.github.tomakehurst.wiremock.recording;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.common.*;
-import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import com.github.tomakehurst.wiremock.http.HttpHeaders;
+import com.github.tomakehurst.wiremock.common.FileSource;
+import com.github.tomakehurst.wiremock.common.SafeNames;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 public class SnapshotStubMappingBodyExtractor {
@@ -32,18 +31,11 @@ public class SnapshotStubMappingBodyExtractor {
      * Extracts body of the ResponseDefinition to a file written to the FILES_ROOT.
      * Modifies the ResponseDefinition to point to the file in-place
      *
-     * @fixme Generates multiple files for stub mappings with identical responses
      * @param stubMapping Stub mapping to extract
      */
     public void extractInPlace(StubMapping stubMapping) {
         byte[] body = stubMapping.getResponse().getByteBody();
-        HttpHeaders responseHeaders = stubMapping.getResponse().getHeaders();
-        String extension = ContentTypes.determineFileExtension(
-            stubMapping.getRequest().getUrl(),
-            responseHeaders != null ? responseHeaders.getContentTypeHeader() : ContentTypeHeader.absent(),
-            body);
-
-        String bodyFileName = SafeNames.makeSafeFileName(stubMapping, extension);
+        String bodyFileName = SafeNames.makeSafeBodyFileName(stubMapping);
 
          // used to prevent ambiguous method call error for withBody()
         String noStringBody = null;
