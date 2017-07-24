@@ -131,13 +131,15 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     private static final String FILTER_BY_REQUEST_PATTERN_SNAPSHOT_REQUEST =
             "{                                                 \n" +
             "    \"outputFormat\": \"full\",                   \n" +
-            "    \"persist\": \"false\",                       \n" +
             "    \"filters\": {                                \n" +
             "        \"urlPattern\": \"/foo.*\",               \n" +
             "        \"headers\": {                            \n" +
             "            \"A\": { \"equalTo\": \"B\" }         \n" +
             "        }                                         \n" +
-            "    }                                             \n" +
+            "    },                                            \n" +
+            "    \"generatorOptions\": {                       \n" +
+            "        \"persist\": \"false\"                    \n" +
+            "     }                                            \n" +
             "}                                                   ";
 
     private static final String FILTER_BY_REQUEST_PATTERN_SNAPSHOT_RESPONSE =
@@ -188,10 +190,12 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     private static final String FILTER_BY_REQUEST_PATTERN_AND_IDS_SNAPSHOT_REQUEST_TEMPLATE =
             "{                                                     \n" +
             "    \"outputFormat\": \"full\",                       \n" +
-            "    \"persist\": \"false\",                           \n" +
             "    \"filters\": {                                    \n" +
             "        \"ids\": [ \"%s\", \"%s\" ],                  \n" +
             "        \"urlPattern\": \"/foo.*\"                    \n" +
+            "    },                                                \n" +
+            "    \"generatorOptions\": {                           \n" +
+            "        \"persist\": \"false\"                        \n" +
             "    }                                                 \n" +
             "}                                                       ";
 
@@ -245,16 +249,18 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     }
 
     private static final String CAPTURE_HEADERS_SNAPSHOT_REQUEST =
-            "{                                      \n" +
-            "    \"outputFormat\": \"full\",        \n" +
-            "    \"persist\": \"false\",            \n" +
-            "    \"captureHeaders\": {              \n" +
-            "        \"Accept\": {                  \n" +
-            "            \"caseInsensitive\": true  \n" +
-            "        },                             \n" +
-            "        \"X-Another\": {}              \n" +
-            "    }                                  \n" +
-            "}                                      ";
+            "{                                          \n" +
+            "    \"outputFormat\": \"full\",            \n" +
+            "    \"generatorOptions\": {                \n" +
+            "        \"persist\": \"false\",            \n" +
+            "        \"captureHeaders\": {              \n" +
+            "            \"Accept\": {                  \n" +
+            "                \"caseInsensitive\": true  \n" +
+            "            },                             \n" +
+            "            \"X-Another\": {}              \n" +
+            "        }                                  \n" +
+            "    }                                      \n" +
+            "}                                            ";
 
     private static final String CAPTURE_HEADERS_SNAPSHOT_RESPONSE =
             "{                                                           \n" +
@@ -297,8 +303,10 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     private static final String REPEATS_AS_SCENARIOS_SNAPSHOT_REQUEST =
             "{                                                 \n" +
             "    \"outputFormat\": \"full\",                   \n" +
-            "    \"persist\": \"false\",                       \n" +
-            "    \"repeatsAsScenarios\": \"true\"              \n" +
+            "    \"generatorOptions\": {                       \n" +
+            "        \"persist\": \"false\",                   \n" +
+            "        \"repeatsAsScenarios\": \"true\"          \n" +
+            "    }                                             \n" +
             "}                                                   ";
 
     private static final String REPEATS_AS_SCENARIOS_SNAPSHOT_RESPONSE =
@@ -345,13 +353,15 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     }
 
     private static final String GLOBAL_TRANSFORMED_STUB_MAPPING_REQUEST =
-        "{                                  \n" +
+            "{                                  \n" +
             "    \"outputFormat\": \"full\",    \n" +
-            "    \"persist\": \"false\"         \n" +
+            "    \"generatorOptions\": {        \n" +
+            "        \"persist\": \"false\"     \n" +
+            "    }                              \n" +
             "}                                    ";
 
     private static final String GLOBAL_TRANSFORMED_STUB_MAPPING_RESPONSE =
-        "{                                                           \n" +
+            "{                                                           \n" +
             "    \"mappings\": [                                         \n" +
             "        {                                                   \n" +
             "            \"request\" : {                                 \n" +
@@ -395,18 +405,19 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     }
 
     private static final String NONGLOBAL_TRANSFORMED_STUB_MAPPING_REQUEST =
-        "{                                    \n" +
-            "    \"outputFormat\": \"full\",      \n" +
-            "    \"persist\": \"false\",          \n" +
-            "    \"transformers\": [              \n" +
-            "       \"nonglobal-transformer\"     \n" +
-            "    ]                                \n" +
-            "}                                      ";
+            "{                                        \n" +
+            "    \"outputFormat\": \"full\",          \n" +
+            "    \"generatorOptions\": {              \n" +
+            "        \"persist\": \"false\",          \n" +
+            "        \"transformers\": [              \n" +
+            "            \"nonglobal-transformer\"    \n" +
+            "        ]                                \n" +
+            "     }                                   \n" +
+            "}                                          ";
 
     private static final String NONGLOBAL_TRANSFORMED_STUB_MAPPING_RESPONSE =
-        "{                                                           \n" +
+            "{                                                           \n" +
             "    \"mappings\": [                                         \n" +
-
             "        {                                                   \n" +
             "            \"request\" : {                                 \n" +
             "                \"url\" : \"/?transformed=nonglobal\",      \n" +
@@ -434,7 +445,7 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
             "            \"response\" : {                                \n" +
             "                \"status\" : 200                            \n" +
             "            }                                               \n" +
-            "        }                                                  \n" +
+            "        }                                                   \n" +
             "    ]                                                       \n" +
             "}                                                             ";
 
@@ -456,17 +467,19 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     }
 
     private static final String RECORD_WITH_CAPTURE_HEADERS_SNAPSHOT_REQUEST_TEMPLATE =
-        "{                                      \n" +
-        "    \"targetBaseUrl\": \"%s\",         \n" +
-        "    \"outputFormat\": \"full\",        \n" +
-        "    \"persist\": \"false\",            \n" +
-        "    \"captureHeaders\": {              \n" +
-        "        \"Accept\": {                  \n" +
-        "            \"caseInsensitive\": true  \n" +
-        "        },                             \n" +
-        "        \"X-Another\": {}              \n" +
-        "    }                                  \n" +
-        "}                                      ";
+        "{                                          \n" +
+        "    \"targetBaseUrl\": \"%s\",             \n" +
+        "    \"outputFormat\": \"full\",            \n" +
+        "    \"generatorOptions\": {                \n" +
+        "       \"persist\": \"false\",             \n" +
+        "        \"captureHeaders\": {              \n" +
+        "            \"Accept\": {                  \n" +
+        "                \"caseInsensitive\": true  \n" +
+        "            },                             \n" +
+        "            \"X-Another\": {}              \n" +
+        "        }                                  \n" +
+        "    }                                      \n" +
+        "}                                            ";
 
     private static final String RECORD_WITH_CAPTURE_HEADERS_RECORD_RESPONSE =
         "{                                                           \n" +

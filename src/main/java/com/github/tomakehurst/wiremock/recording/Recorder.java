@@ -103,15 +103,18 @@ public class Recorder {
     }
 
     public SnapshotRecordResult takeSnapshot(List<ServeEvent> serveEvents, RecordSpec recordSpec) {
+        final SnapshotStubMappingGenerator stubMappingGenerator = new SnapshotStubMappingGenerator(
+            recordSpec.getGeneratorOptions().getCaptureHeaders(),
+            recordSpec.getGeneratorOptions().getJsonMatchingFlags());
         final List<StubMapping> stubMappings = serveEventsToStubMappings(
             Lists.reverse(serveEvents),
             recordSpec.getFilters(),
-            new SnapshotStubMappingGenerator(recordSpec.getCaptureHeaders(), recordSpec.getJsonMatchingFlags()),
+            stubMappingGenerator,
             getStubMappingPostProcessor(admin.getOptions(), recordSpec)
         );
 
         for (StubMapping stubMapping : stubMappings) {
-            if (recordSpec.shouldPersist()) {
+            if (recordSpec.getGeneratorOptions().shouldPersist()) {
                 stubMapping.setPersistent(true);
             }
             admin.addStubMapping(stubMapping);
@@ -137,15 +140,15 @@ public class Recorder {
         FileSource filesRoot = options.filesRoot().child(FILES_ROOT);
         final SnapshotStubMappingTransformerRunner transformerRunner = new SnapshotStubMappingTransformerRunner(
             options.extensionsOfType(StubMappingTransformer.class).values(),
-            recordSpec.getTransformers(),
-            recordSpec.getTransformerParameters(),
+            recordSpec.getGeneratorOptions().getTransformers(),
+            recordSpec.getGeneratorOptions().getTransformerParameters(),
             filesRoot
         );
 
         return new SnapshotStubMappingPostProcessor(
-            recordSpec.shouldRecordRepeatsAsScenarios(),
+            recordSpec.getGeneratorOptions().shouldRecordRepeatsAsScenarios(),
             transformerRunner,
-            recordSpec.getExtractBodyCriteria(),
+            recordSpec.getGeneratorOptions().getExtractBodyCriteria(),
             new SnapshotStubMappingBodyExtractor(filesRoot)
         );
     }

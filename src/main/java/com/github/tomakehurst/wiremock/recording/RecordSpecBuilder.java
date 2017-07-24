@@ -106,19 +106,20 @@ public class RecordSpecBuilder {
             new ProxiedServeEventFilters(filterRequestPattern, filterIds) :
             null;
 
-        ResponseDefinitionBodyMatcher responseDefinitionBodyMatcher = new ResponseDefinitionBodyMatcher(maxTextBodySize, maxBinaryBodySize);
+        GeneratorOptionsSpec generatorOptions = new GeneratorOptionsSpec(
+            headers.isEmpty() ? null : headers,
+            new ResponseDefinitionBodyMatcher(maxTextBodySize, maxBinaryBodySize),
+            repeatsAsScenarios,
+            jsonMatchingFlags,
+            transformerNames,
+            transformerParameters,
+            persistentStubs);
 
         return new RecordSpec(
             targetBaseUrl,
             filters,
-            headers.isEmpty() ? null : headers,
-            responseDefinitionBodyMatcher,
-            SnapshotOutputFormatter.FULL,
-            persistentStubs,
-            repeatsAsScenarios,
-            transformerNames,
-            transformerParameters,
-            jsonMatchingFlags);
+            generatorOptions,
+            SnapshotOutputFormatter.FULL);
     }
 
     public RecordSpecBuilder jsonBodyMatchFlags(boolean ignoreArrayOrder, boolean ignoreExtraElements) {
