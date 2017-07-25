@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.core.Admin;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.github.tomakehurst.wiremock.extension.StubMappingTransformer;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.google.common.base.Predicate;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.proxyAllTo;
 import static com.github.tomakehurst.wiremock.common.LocalNotifier.notifier;
 import static com.github.tomakehurst.wiremock.core.WireMockApp.FILES_ROOT;
 import static com.google.common.collect.FluentIterable.from;
@@ -52,11 +52,11 @@ public class Recorder {
             return;
         }
 
-        if (spec.getTargetBaseUrl() == null || spec.getTargetBaseUrl().isEmpty()) {
-            throw new InvalidRequestException(Errors.validation("/targetBaseUrl", "targetBaseUrl is required"));
+        if (spec.getProxyResponse() == null || spec.getProxyResponse().getProxyBaseUrl() == null) {
+            throw new InvalidRequestException(Errors.validation("/proxyResponse", "either proxyResponse or targetBaseUrl are required"));
         }
 
-        StubMapping proxyMapping = proxyAllTo(spec.getTargetBaseUrl()).build();
+        StubMapping proxyMapping = new StubMapping(RequestPattern.everything(), spec.getProxyResponse());
         admin.addStubMapping(proxyMapping);
 
         List<ServeEvent> serveEvents = admin.getServeEvents().getServeEvents();

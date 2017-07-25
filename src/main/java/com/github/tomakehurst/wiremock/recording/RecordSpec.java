@@ -18,7 +18,9 @@ package com.github.tomakehurst.wiremock.recording;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.extension.Parameters;
+import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ import java.util.Map;
  */
 public class RecordSpec {
 
-    private final String targetBaseUrl;
+    private final ResponseDefinition proxyResponse;
 
     // Whitelist requests to generate StubMappings for
     private final ProxiedServeEventFilters filters;
@@ -51,6 +53,7 @@ public class RecordSpec {
     @JsonCreator
     public RecordSpec(
         @JsonProperty("targetBaseUrl") String targetBaseUrl,
+        @JsonProperty("proxyResponse") ResponseDefinition proxyResponse,
         @JsonProperty("filters") ProxiedServeEventFilters filters,
         @JsonProperty("captureHeaders") Map<String, CaptureHeadersSpec> captureHeaders,
         @JsonProperty("extractBodyCriteria") ResponseDefinitionBodyMatcher extractBodyCriteria,
@@ -60,7 +63,10 @@ public class RecordSpec {
         @JsonProperty("transformers") List<String> transformers,
         @JsonProperty("transformerParameters") Parameters transformerParameters,
         @JsonProperty("jsonMatchingFlags") JsonMatchingFlags jsonMatchingFlags) {
-        this.targetBaseUrl = targetBaseUrl;
+        if (proxyResponse == null && targetBaseUrl != null) {
+            proxyResponse = new ResponseDefinitionBuilder().proxiedFrom(targetBaseUrl).build();
+        }
+        this.proxyResponse = proxyResponse;
         this.filters = filters == null ? new ProxiedServeEventFilters() : filters;
         this.captureHeaders = captureHeaders;
         this.extractBodyCriteria = extractBodyCriteria;
@@ -73,17 +79,17 @@ public class RecordSpec {
     }
 
     private RecordSpec() {
-        this(null, null, null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null, null, null, null);
     }
 
     public static final RecordSpec DEFAULTS = new RecordSpec();
 
     public static RecordSpec forBaseUrl(String targetBaseUrl) {
-        return new RecordSpec(targetBaseUrl, null, null, null, null, null, true, null, null, null);
+        return new RecordSpec(targetBaseUrl, null, null, null, null, null, null, true, null, null, null);
     }
 
-    public String getTargetBaseUrl() {
-        return targetBaseUrl;
+    public ResponseDefinition getProxyResponse() {
+        return proxyResponse;
     }
 
     public ProxiedServeEventFilters getFilters() { return filters; }
