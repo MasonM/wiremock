@@ -18,6 +18,7 @@ package com.github.tomakehurst.wiremock.recording;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.google.common.collect.ImmutableList;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -26,8 +27,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.okForContentType;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.Assert.assertThat;
 
 @RunWith(JMock.class)
@@ -53,7 +56,7 @@ public class SnapshotStubMappingBodyExtractorTest {
             one(filesSource).writeBinaryFile(with(any(String.class)), with(any(byte[].class)));
         }});
         bodyExtractor.extractInPlace(stubMapping);
-        assertThat(stubMapping.getResponse().getBodyFileName(), is("foo-" + stubMapping.getId() + ".txt"));
+        assertThat(stubMapping.getResponse().getBodyFileName(), stringContainsInOrder(ImmutableList.of("foo-", ".txt")));
         assertThat(stubMapping.getResponse().specifiesBodyFile(), is(true));
         assertThat(stubMapping.getResponse().specifiesBodyContent(), is(false));
     }
@@ -61,9 +64,9 @@ public class SnapshotStubMappingBodyExtractorTest {
     @Test
     public void determinesFileNameProperlyFromUrlWithJson() {
         StubMapping stubMapping = WireMock.get("/foo/bar.json")
-            .willReturn(ok("{}"))
+            .willReturn(ok(""))
             .build();
-        setFileExpectations("foobarjson-" + stubMapping.getId() + ".json", "{}");
+        setFileExpectations("foobarjson-", ".json");
         bodyExtractor.extractInPlace(stubMapping);
     }
 
@@ -72,34 +75,34 @@ public class SnapshotStubMappingBodyExtractorTest {
         StubMapping stubMapping = WireMock.get("/foo/bar.txt")
             .willReturn(ok(""))
             .build();
-        setFileExpectations("foobartxt-" + stubMapping.getId() + ".txt", "");
+        setFileExpectations("foobartxt-", ".txt");
         bodyExtractor.extractInPlace(stubMapping);
     }
 
     @Test
     public void determinesFileNameProperlyFromMimeTypeWithJson() {
-        StubMapping stubMapping = WireMock.get("/foo/bar.txt")
-            .willReturn(okJson("{}"))
+        StubMapping stubMapping = WireMock.get("/foo")
+            .willReturn(okJson(""))
             .build();
-        setFileExpectations( "foobartxt-" + stubMapping.getId() + ".json", "{}");
+        setFileExpectations( "foo-", ".json");
         bodyExtractor.extractInPlace(stubMapping);
     }
 
     @Test
     public void determinesFileNameProperlyWithNamedStubMapping() {
-        StubMapping stubMapping = WireMock.get("/foo")
-            .willReturn(okJson("{}"))
+        StubMapping stubMapping = WireMock.get("/foo/bar.txt")
+            .willReturn(ok(""))
             .build();
         stubMapping.setName("TEST NAME!");
-        setFileExpectations( "test-name-" + stubMapping.getId() + ".json", "{}");
+        setFileExpectations( "test-name-", ".txt");
         bodyExtractor.extractInPlace(stubMapping);
     }
 
-    private void setFileExpectations(final String filename, final String body) {
+    private void setFileExpectations(final String prefix, final String extension) {
         context.checking(new Expectations() {{
             one(filesSource).writeBinaryFile(
-                with(equal(filename)),
-                with(equal(body.getBytes()))
+                with(stringContainsInOrder(ImmutableList.of(prefix, extension))),
+                with(equal(new byte[0]))
             );
         }});
     }

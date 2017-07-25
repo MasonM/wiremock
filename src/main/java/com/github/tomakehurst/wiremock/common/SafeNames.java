@@ -1,8 +1,11 @@
 package com.github.tomakehurst.wiremock.common;
 
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.matching.AnythingPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
@@ -18,11 +21,25 @@ public class SafeNames {
     private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
 
     public static String makeSafeFileName(StubMapping mapping) {
-        return makeSafeFileName(mapping, "json");
+        String suffix = "-" + mapping.getId() + ".json";
+        return makeSafeFileName(mapping, suffix);
     }
 
-    public static String makeSafeFileName(StubMapping mapping, String extension) {
-        String suffix = "-" + mapping.getId() + "." + extension;
+    public static String makeSafeBodyFileName(StubMapping mapping) {
+        byte[] body = mapping.getResponse().getByteBody();
+        HttpHeaders responseHeaders = mapping.getResponse().getHeaders();
+        String extension = ContentTypes.determineFileExtension(
+            mapping.getRequest().getUrl(),
+            responseHeaders != null ? responseHeaders.getContentTypeHeader() : ContentTypeHeader.absent(),
+            body);
+        // Generate unique fingerprint for the body contents to avoid duplicate files.
+        // According to smhasher (https://github.com/rurban/smhasher), FarmHash64 is extremely fast and has few collisions
+        String fingerprint = Hashing.farmHashFingerprint64().hashBytes(body).toString();
+        String suffix = "-" + fingerprint + "." + extension;
+        return makeSafeFileName(mapping, suffix);
+    }
+
+    private static String makeSafeFileName(StubMapping mapping, String suffix) {
         if (isNotEmpty(mapping.getName())) {
             return makeSafeName(mapping.getName()) + suffix;
         }
