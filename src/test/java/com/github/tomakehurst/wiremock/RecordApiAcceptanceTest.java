@@ -139,7 +139,7 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
             "    },                                            \n" +
             "    \"generatorOptions\": {                       \n" +
             "        \"persist\": \"false\"                    \n" +
-            "     }                                            \n" +
+            "    }                                             \n" +
             "}                                                   ";
 
     private static final String FILTER_BY_REQUEST_PATTERN_SNAPSHOT_RESPONSE =
@@ -153,7 +153,7 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
             "            \"response\" : {                                \n" +
             "                \"status\" : 200                            \n" +
             "            }                                               \n" +
-            "        },                                                   \n" +
+            "        },                                                  \n" +
             "        {                                                   \n" +
             "            \"request\" : {                                 \n" +
             "                \"url\" : \"/foo/bar/baz\",                 \n" +
@@ -162,7 +162,7 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
             "            \"response\" : {                                \n" +
             "                \"status\" : 200                            \n" +
             "            }                                               \n" +
-            "        }                                                  \n" +
+            "        }                                                   \n" +
             "    ]                                                       \n" +
             "}                                                             ";
 
@@ -249,18 +249,20 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     }
 
     private static final String CAPTURE_HEADERS_SNAPSHOT_REQUEST =
-            "{                                          \n" +
-            "    \"outputFormat\": \"full\",            \n" +
-            "    \"generatorOptions\": {                \n" +
-            "        \"persist\": \"false\",            \n" +
-            "        \"captureHeaders\": {              \n" +
-            "            \"Accept\": {                  \n" +
-            "                \"caseInsensitive\": true  \n" +
-            "            },                             \n" +
-            "            \"X-Another\": {}              \n" +
-            "        }                                  \n" +
-            "    }                                      \n" +
-            "}                                            ";
+            "{                                              \n" +
+            "    \"outputFormat\": \"full\",                \n" +
+            "    \"generatorOptions\": {                    \n" +
+            "        \"persist\": \"false\",                \n" +
+            "        \"request\": {                         \n" +
+            "            \"captureHeaders\": {              \n" +
+            "                \"Accept\": {                  \n" +
+            "                    \"caseInsensitive\": true  \n" +
+            "                },                             \n" +
+            "                \"X-Another\": {}              \n" +
+            "            }                                  \n" +
+            "        }                                      \n" +
+            "    }                                          \n" +
+            "}                                                ";
 
     private static final String CAPTURE_HEADERS_SNAPSHOT_RESPONSE =
             "{                                                           \n" +
@@ -305,7 +307,9 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
             "    \"outputFormat\": \"full\",                   \n" +
             "    \"generatorOptions\": {                       \n" +
             "        \"persist\": \"false\",                   \n" +
-            "        \"repeatsAsScenarios\": \"true\"          \n" +
+            "        \"request\": {                            \n" +
+            "            \"repeatsAsScenarios\": \"true\"      \n" +
+            "        }                                         \n" +
             "    }                                             \n" +
             "}                                                   ";
 
@@ -467,19 +471,21 @@ public class RecordApiAcceptanceTest extends AcceptanceTestBase {
     }
 
     private static final String RECORD_WITH_CAPTURE_HEADERS_SNAPSHOT_REQUEST_TEMPLATE =
-        "{                                          \n" +
-        "    \"targetBaseUrl\": \"%s\",             \n" +
-        "    \"outputFormat\": \"full\",            \n" +
-        "    \"generatorOptions\": {                \n" +
-        "       \"persist\": \"false\",             \n" +
-        "        \"captureHeaders\": {              \n" +
-        "            \"Accept\": {                  \n" +
-        "                \"caseInsensitive\": true  \n" +
-        "            },                             \n" +
-        "            \"X-Another\": {}              \n" +
-        "        }                                  \n" +
-        "    }                                      \n" +
-        "}                                            ";
+        "{                                              \n" +
+        "    \"targetBaseUrl\": \"%s\",                 \n" +
+        "    \"outputFormat\": \"full\",                \n" +
+        "    \"generatorOptions\": {                    \n" +
+        "        \"persist\": \"false\",                \n" +
+        "        \"request\": {                         \n" +
+        "            \"captureHeaders\": {              \n" +
+        "                \"Accept\": {                  \n" +
+        "                    \"caseInsensitive\": true  \n" +
+        "                },                             \n" +
+        "                \"X-Another\": {}              \n" +
+        "            }                                  \n" +
+        "        }                                      \n" +
+        "    }                                          \n" +
+        "}                                                ";
 
     private static final String RECORD_WITH_CAPTURE_HEADERS_RECORD_RESPONSE =
         "{                                                           \n" +

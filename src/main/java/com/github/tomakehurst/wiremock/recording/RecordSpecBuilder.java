@@ -99,18 +99,25 @@ public class RecordSpecBuilder {
     }
 
     public RecordSpec build() {
-        RequestPattern filterRequestPattern = filterRequestPatternBuilder != null ?
+        final RequestOptionsSpec requestOptionsSpec = new RequestOptionsSpec(
+            headers.isEmpty() ? null : headers,
+            repeatsAsScenarios,
+            jsonMatchingFlags
+        );
+        final ResponseOptionsSpec responseOptionsSpec = new ResponseOptionsSpec(
+            new ResponseDefinitionBodyMatcher(maxTextBodySize, maxBinaryBodySize)
+        );
+
+        final RequestPattern filterRequestPattern = filterRequestPatternBuilder != null ?
             filterRequestPatternBuilder.build() :
             null;
-        ProxiedServeEventFilters filters = filterRequestPatternBuilder != null || filterIds != null ?
+        final ProxiedServeEventFilters filters = filterRequestPatternBuilder != null || filterIds != null ?
             new ProxiedServeEventFilters(filterRequestPattern, filterIds) :
             null;
 
         GeneratorOptionsSpec generatorOptions = new GeneratorOptionsSpec(
-            headers.isEmpty() ? null : headers,
-            new ResponseDefinitionBodyMatcher(maxTextBodySize, maxBinaryBodySize),
-            repeatsAsScenarios,
-            jsonMatchingFlags,
+            requestOptionsSpec,
+            responseOptionsSpec,
             transformerNames,
             transformerParameters,
             persistentStubs);

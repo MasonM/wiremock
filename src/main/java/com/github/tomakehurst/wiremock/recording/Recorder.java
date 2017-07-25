@@ -104,8 +104,8 @@ public class Recorder {
 
     public SnapshotRecordResult takeSnapshot(List<ServeEvent> serveEvents, RecordSpec recordSpec) {
         final SnapshotStubMappingGenerator stubMappingGenerator = new SnapshotStubMappingGenerator(
-            recordSpec.getGeneratorOptions().getCaptureHeaders(),
-            recordSpec.getGeneratorOptions().getJsonMatchingFlags());
+            recordSpec.getGeneratorOptions().getRequest().getCaptureHeaders(),
+            recordSpec.getGeneratorOptions().getRequest().getJsonMatchingFlags());
         final List<StubMapping> stubMappings = serveEventsToStubMappings(
             Lists.reverse(serveEvents),
             recordSpec.getFilters(),
@@ -146,9 +146,9 @@ public class Recorder {
         );
 
         return new SnapshotStubMappingPostProcessor(
-            recordSpec.getGeneratorOptions().shouldRecordRepeatsAsScenarios(),
+            recordSpec.getGeneratorOptions().getRequest().shouldRecordRepeatsAsScenarios(),
             transformerRunner,
-            recordSpec.getGeneratorOptions().getExtractBodyCriteria(),
+            recordSpec.getGeneratorOptions().getResponse().getExtractBodyCriteria(),
             new SnapshotStubMappingBodyExtractor(filesRoot)
         );
     }
