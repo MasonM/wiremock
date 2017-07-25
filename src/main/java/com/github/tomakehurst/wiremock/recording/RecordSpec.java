@@ -36,6 +36,8 @@ public class RecordSpec {
     private final ProxiedServeEventFilters filters;
     // Headers from the request to include in the stub mapping, if they match the corresponding matcher
     private final Map<String, CaptureHeadersSpec> captureHeaders;
+    // Factory for the StringValuePattern that will be used to match request bodies
+    private final RequestBodyPatternFactory requestBodyPatternFactory;
     // Criteria for extracting body from responses
     private final ResponseDefinitionBodyMatcher extractBodyCriteria;
     // How to format StubMappings in the response body
@@ -48,7 +50,6 @@ public class RecordSpec {
     private final List<String> transformers;
     // Parameters for stub mapping transformers
     private final Parameters transformerParameters;
-    private final JsonMatchingFlags jsonMatchingFlags;
 
     @JsonCreator
     public RecordSpec(
@@ -56,26 +57,26 @@ public class RecordSpec {
         @JsonProperty("proxyResponse") ResponseDefinition proxyResponse,
         @JsonProperty("filters") ProxiedServeEventFilters filters,
         @JsonProperty("captureHeaders") Map<String, CaptureHeadersSpec> captureHeaders,
+        @JsonProperty("requestBodyPattern") RequestBodyPatternFactory requestBodyPatternFactory,
         @JsonProperty("extractBodyCriteria") ResponseDefinitionBodyMatcher extractBodyCriteria,
         @JsonProperty("outputFormat") SnapshotOutputFormatter outputFormat,
         @JsonProperty("persist") Boolean persist,
         @JsonProperty("repeatsAsScenarios") Boolean repeatsAsScenarios,
         @JsonProperty("transformers") List<String> transformers,
-        @JsonProperty("transformerParameters") Parameters transformerParameters,
-        @JsonProperty("jsonMatchingFlags") JsonMatchingFlags jsonMatchingFlags) {
+        @JsonProperty("transformerParameters") Parameters transformerParameters) {
         if (proxyResponse == null && targetBaseUrl != null) {
             proxyResponse = new ResponseDefinitionBuilder().proxiedFrom(targetBaseUrl).build();
         }
         this.proxyResponse = proxyResponse;
         this.filters = filters == null ? new ProxiedServeEventFilters() : filters;
         this.captureHeaders = captureHeaders;
+        this.requestBodyPatternFactory = requestBodyPatternFactory == null ? RequestBodyAutomaticPatternFactory.DEFAULTS : requestBodyPatternFactory;
         this.extractBodyCriteria = extractBodyCriteria;
         this.outputFormat = outputFormat == null ? SnapshotOutputFormatter.FULL : outputFormat;
         this.persist = persist == null ? true : persist;
         this.repeatsAsScenarios = repeatsAsScenarios;
         this.transformers = transformers;
         this.transformerParameters = transformerParameters;
-        this.jsonMatchingFlags = jsonMatchingFlags;
     }
 
     private RecordSpec() {
@@ -116,7 +117,5 @@ public class RecordSpec {
 
     public ResponseDefinitionBodyMatcher getExtractBodyCriteria() { return extractBodyCriteria; }
 
-    public JsonMatchingFlags getJsonMatchingFlags() {
-        return jsonMatchingFlags;
-    }
+    public RequestBodyPatternFactory getRequestBodyPatternFactory() { return requestBodyPatternFactory; }
 }
