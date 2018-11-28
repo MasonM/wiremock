@@ -7,13 +7,13 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.3.5",
-    "js-yaml": "^3.12.0",
     "node-sass": "4.9.3",
     "npm-run-all": "^1.7.0",
     "onchange": "^2.2.0",
     "postcss-cli": "^2.5.1",
     "redoc": "^2.0.0-alpha.40",
     "shx": "0.2.2",
+    "swagger-cli": "^2.2.0",
     "swagger-ui-dist": "^3.19.4",
     "uglify-js": "^2.6.1"
   },
@@ -28,8 +28,8 @@
     "build:js": "npm run uglify",
     "build:all": "npm run build:css && npm run build:js",
     "swaggerui": "shx cp -rf node_modules/swagger-ui-dist/ ../src/main/resources/assets/swagger-ui/",
-    "swaggerjson": "js-yaml ../src/main/resources/swagger/wiremock-admin-api.yaml > ../src/main/resources/swagger/wiremock-admin-api.json",
+    "swaggerjson": "swagger-cli bundle -t json ../src/main/resources/swagger/wiremock-admin-api.yaml > ../src/main/resources/swagger/wiremock-admin-api.json",
     "redoc": "shx cp node_modules/redoc/bundles/redoc.standalone.js assets/js",
-    "apidocs": "npm-run-all swaggerui swaggerjson redoc && cp ../src/main/resources/swagger/wiremock-admin-api.yaml assets/"
+    "apidocs": "npm-run-all swaggerui swaggerjson redoc && cp ../src/main/resources/swagger/wiremock-admin-api.json assets/js/"
   }
 }

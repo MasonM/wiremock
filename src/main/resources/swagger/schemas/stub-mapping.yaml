@@ -1,0 +1,31 @@
+type: object
+properties:
+  id:
+    type: string
+    description: This stub mapping's unique identifier
+  newScenarioState:
+    type: string
+    description: The new state for the scenario to be updated to after this stub is served.
+  persistent:
+    type: boolean
+    description: Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.
+  postServeActions:
+    type: object
+    description: A map of the names of post serve action extensions to trigger and their parameters.
+  metadata:
+    type: object
+    description: Arbitrary metadata to be used for e.g. tagging, documentation. Can also be used to find and remove stubs.
+  priority:
+    type: integer
+    description: This stub mapping's priority relative to others. 1 is highest.
+    minimum: 1
+  request:
+    $ref: 'request-pattern.yaml'
+  requiredScenarioState:
+    type: string
+    description: The required state of the scenario in order for this stub to be matched.
+  response:
+    $ref: "response-definition.yaml"
+  scenarioName:
+    type: string
+    description: The name of the scenario that this stub mapping is part of

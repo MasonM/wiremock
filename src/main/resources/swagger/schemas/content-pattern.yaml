@@ -1,0 +1,67 @@
+oneOf:
+  - description: String equality
+    type: object
+    properties:
+      equalTo:
+        type: boolean
+      caseInsensitive:
+        type: boolean
+    required:
+      - equalTo
+  - description: String contains
+    type: object
+    properties:
+      contains:
+        type: string
+    required:
+      - contains
+  - description: Regular expression match
+    type: object
+    properties:
+      matches:
+        type: string
+    required:
+      - matches
+  - description: Negative regular expression match
+    type: object
+    properties:
+      doesNotMatch:
+        type: string
+    required:
+      - doesNotMatch
+  - description: JSON equality
+    type: object
+    properties:
+      equalToJson:
+        type: string
+    required:
+      - equalToJson
+  - description: JSONPath match
+    type: object
+    properties:
+      matchesJsonPath:
+        type: string
+      ignoreArrayOrder:
+        type: boolean
+      ignoreExtraElements:
+        type: boolean
+    required:
+      - matchesJsonPath
+  - description: XML equality
+    type: object
+    properties:
+      equalToXml:
+        type: string
+    required:
+      - equalToXml
+  - description: XPath match
+    type: object
+    properties:
+      matchesXpath:
+        type: string
+      namespaces:
+        type: object
+      valuePattern:
+        $ref: "content-pattern.yaml"
+    required:
+      - matchesXpath

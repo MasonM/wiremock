@@ -1,0 +1,14 @@
+summary: Stub mapping with ID
+value:
+  id: 76ada7b0-49ae-4229-91c4-396a36f18e09
+  priority: 3
+  request:
+    headers:
+      Accept: text/plain
+    method: GET
+    url: /some/thing
+  response:
+    body: Hello world!
+    headers:
+      Content-Type: text/plain
+    status: 200

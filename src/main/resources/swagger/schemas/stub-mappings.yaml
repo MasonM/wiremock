@@ -1,0 +1,13 @@
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      total:
+        type: integer
+    required:
+      - total
+  mappings:
+    type: array
+    items:
+      $ref: "stub-mapping.yaml"

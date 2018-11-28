@@ -22,7 +22,7 @@ tags:
     externalDocs:
       description: User documentation
       url: http://wiremock.org/docs/verifying/
-  - name: NearMisses
+  - name: Near Misses
     description: Find inexact matches
     externalDocs:
       description: User documentation
@@ -66,34 +66,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/stubMappings'
+                $ref: 'schemas/stub-mappings.yaml'
               examples:
                 stubMappings:
-                  $ref: '#/components/examples/stubMappings'
+                  $ref: 'examples/stub-mappings.yaml'
           description: All stub mappings
     post:
       description: Create a new stub mapping
       tags:
          - Mappings
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/stubMapping'
-            examples:
-              stubMappingNoId:
-                $ref: "#/components/examples/stubMappingNoId"
-        required: true
+        $ref: "#/components/requestBodies/stubMapping"
       responses:
         '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/stubMapping'
-              examples:
-                stubMappingWithId:
-                  $ref: '#/components/examples/stubMappingWithId'
-          description: Successfully created
+          $ref: "#/components/responses/stubMapping"
     delete:
       description: Delete all stub mappings
       tags:
@@ -135,36 +121,16 @@ paths:
          - Mappings
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/stubMapping'
-              examples:
-                stubMappingWithId:
-                  $ref: '#/components/examples/stubMappingWithId'
-          description: Stub mapping
+          $ref: "#/components/responses/stubMapping"
     put:
       description: Update an existing stub mapping
       tags:
          - Mappings
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/stubMapping'
-            examples:
-              stubMappingNoId:
-                $ref: "#/components/examples/stubMappingNoId"
+        $ref: "#/components/requestBodies/stubMapping"
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/stubMapping'
-              examples:
-                stubMappingWithId:
-                  $ref: '#/components/examples/stubMappingWithId'
-          description: Created stub mapping
+          $ref: "#/components/responses/stubMapping"
     delete:
       description: Delete a stub mapping
       tags:
@@ -182,20 +148,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/contentPattern'
+              $ref: 'schemas/content-pattern.yaml'
             examples:
               byMetadataRequest:
-                $ref: '#/components/examples/byMetadataRequest'
+                $ref: 'examples/by-metadata-request.yaml'
         required: true
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/stubMappings'
+                $ref: 'schemas/stub-mappings.yaml'
               examples:
                 stubMappingWithId:
-                  $ref: '#/components/examples/stubMappingWithId'
+                  $ref: 'examples/stub-mappings.yaml'
           description: Matched stub mappings
 
   /__admin/mappings/remove-by-metadata:
@@ -207,10 +173,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/contentPattern'
+              $ref: 'schemas/content-pattern.yaml'
             examples:
               byMetadataRequest:
-                $ref: '#/components/examples/byMetadataRequest'
+                $ref: 'examples/by-metadata-request.yaml'
       responses:
         '200':
           description: 'The stub mappings were successfully removed'
@@ -239,7 +205,7 @@ paths:
             application/json:
               examples:
                 serveEvents:
-                  $ref: '#/components/examples/serveEvents'
+                  $ref: 'examples/serve-events.yaml'
           description: List of received requests
     delete:
       description: Delete all received requests
@@ -282,11 +248,7 @@ paths:
       tags:
          - Requests
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/requestPattern'
-        required: true
+        $ref: "#/components/requestBodies/requestPattern"
       responses:
         '200':
           # TODO:  !include examples/request-count.example.json
@@ -298,11 +260,7 @@ paths:
       tags:
          - Requests
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/requestPattern'
-        required: true
+        $ref: "#/components/requestBodies/requestPattern"
       responses:
         '200':
           # TODO !include examples/requests.example.json
@@ -322,7 +280,7 @@ paths:
     get:
       description: Retrieve near-misses for all unmatched requests
       tags:
-         - Requests
+         - Near Misses
       responses:
         '200':
           #TODO !include examples/near-misses.example.json
@@ -332,34 +290,30 @@ paths:
     post:
       description: Find at most 3 near misses for closest stub mappings to the specified request
       tags:
-         - NearMisses
+         - Near Misses
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/loggedRequest'
+              $ref: 'schemas/logged-request.yaml'
+            examples:
+              loggedRequest:
+                $ref: 'examples/logged-request.yaml'
         required: true
       responses:
         '200':
-          #TODO !include examples/near-misses.example.json
-          description: Near misses matching criteria
+          $ref: "#/components/responses/nearMisses"
 
   /__admin/near-misses/request-pattern:
     post:
       description: Find at most 3 near misses for closest logged requests to the specified request pattern
       tags:
-         - NearMisses
+         - Near Misses
       requestBody:
-        #TODO !include examples/request-pattern.example.json
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/requestPattern'
-        required: true
+        $ref: "#/components/requestBodies/requestPattern"
       responses:
         '200':
-          #TODO !include examples/near-misses.example.json
-          description: Near misses matching criteria
+          $ref: "#/components/responses/nearMisses"
 
   /__admin/recordings/start:
     post:
@@ -370,7 +324,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/startRecording'
+              allOf:
+                - $ref: 'schemas/record-spec.yaml'
+                - properties:
+                    filters:
+                      allOf:
+                        - $ref: 'schemas/request-pattern.yaml'
+                        - description: Filter requests for which to create stub mapping
+                    targetBaseUrl:
+                      type: string
+                      description: Target URL when using the record and playback API
+                      example: http://example.mocklab.io
         required: true
         # TODO !include examples/record-spec.example.json
       responses:
@@ -387,12 +351,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/stubMappings'
+                $ref: 'schemas/stub-mappings.yaml'
               examples:
                 stubMappings:
-                  $ref: '#/components/examples/stubMappings'
+                  $ref: 'examples/recorded-stub-mappings.yaml'
           description: Successfully started recording
-          # TODO !include examples/recorded-stub-mappings.example.json
 
   /__admin/recordings/status:
     get:
@@ -426,17 +389,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/snapshot'
+              type: object
+              allOf:
+                - $ref: "schemas/record-spec.yaml"
+                - properties:
+                    filters:
+                      type: object
+                      allOf:
+                        - properties:
+                            ids:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                          description: Filter requests for which to create stub mapping
+                        - $ref: 'schemas/request-pattern.yaml'
         required: true
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/stubMappings'
+                $ref: 'schemas/stub-mappings.yaml'
               examples:
                 stubMappings:
-                  $ref: '#/components/examples/stubMappings'
+                  $ref: 'examples/stub-mappings.yaml'
           description: Successfully took a snapshot recording
           # TODO !include examples/recorded-stub-mappings.example.json
 
@@ -451,7 +428,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/scenarios'
+                type: object
+                properties:
+                  scenarios:
+                    type: array
+                    items:
+                      $ref: "schemas/scenario.yaml"
           description: All scenarios
 
   /__admin/scenarios/reset:
@@ -472,7 +454,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/globalSettings'
+              allOf:
+                - $ref: "schemas/delay-distribution.yaml"
+                - type: object
+                  properties:
+                    fixedDelay:
+                      type: number
+                  example:
+                    fixedDelay: 500
         required: true
       responses:
         '200':
@@ -497,608 +486,44 @@ paths:
           description: Server will be shut down
 
 components:
-  examples:
-    stubMappingWithId:
-      summary: Stub mapping with ID
-      value:
-        id: 76ada7b0-49ae-4229-91c4-396a36f18e09
-        priority: 3
-        request:
-          headers:
-            Accept: text/plain
-          method: GET
-          url: /some/thing
-        response:
-          body: Hello world!
-          headers:
-            Content-Type: text/plain
-          status: 200
-    stubMappingNoId:
-      summary: Stub mapping without ID
-      value:
-        request:
-          method: GET
-          url: /some/thing
-        response:
-          body: Hello world!
-          headers:
-            Content-Type: text/plain
-          status: 200
-    stubMappings:
-      summary: Resulting stub mappings
-      value:
-        meta:
-          total: 2
-        mappings:
-          - request:
-              method: GET
-              url: /search?q=things
-              headers:
-                Accept:
-                  equalTo: application/json
-            response:
-              status: 200
-              jsonBody:
-                - thing1
-                - thing2
-              headers:
-                Content-Type: application/json
-          - request:
-              method: POST
-              urlPath: /some/things
-              bodyPatterns:
-                - { equalToXml: <stuff /> }
-            response:
-              status: 201
-    byMetadataRequest:
-      summary: Request for stub mapping matching metadata
-      value:
-        matchesJsonPath:
-          expression: '$.outer'
-          equalToJson: '{ "inner": 42 }'
-    serveEvents:
-      summary: Serve events
-      value:
-        requests:
-        - id: 45760a03-eebb-4387-ad0d-bb89b5d3d662
-          request:
-            url: "/received-request/9"
-            absoluteUrl: http://localhost:56715/received-request/9
-            method: GET
-            clientIp: 127.0.0.1
-            headers:
-              Connection: keep-alive
-              Host: localhost:56715
-              User-Agent: Apache-HttpClient/4.5.1 (Java/1.7.0_51)
-            cookies: {}
-            browserProxyRequest: false
-            loggedDate: 1471442494809
-            bodyAsBase64: ''
-            body: ''
-            loggedDateString: '2016-08-17T14:01:34Z'
-          responseDefinition:
-            status: 404
-            transformers: []
-            fromConfiguredStub: false
-            transformerParameters: {}
-        - id: 6ae78311-0178-46c9-987a-fbfc528d54d8
-          request:
-            url: "/received-request/8"
-            absoluteUrl: http://localhost:56715/received-request/8
-            method: GET
-            clientIp: 127.0.0.1
-            headers:
-              Connection: keep-alive
-              Host: localhost:56715
-              User-Agent: Apache-HttpClient/4.5.1 (Java/1.7.0_51)
-            cookies: {}
-            browserProxyRequest: false
-            loggedDate: 1471442494802
-            bodyAsBase64: ''
-            body: ''
-            loggedDateString: '2016-08-17T14:01:34Z'
-          responseDefinition:
-            status: 404
-            transformers: []
-            fromConfiguredStub: false
-            transformerParameters: {}
-        - id: aba8e4ad-1b5b-4518-8f05-b2170a24de35
-          request:
-            url: "/received-request/7"
-            absoluteUrl: http://localhost:56715/received-request/7
-            method: GET
-            clientIp: 127.0.0.1
-            headers:
-              Connection: keep-alive
-              Host: localhost:56715
-              User-Agent: Apache-HttpClient/4.5.1 (Java/1.7.0_51)
-            cookies: {}
-            browserProxyRequest: false
-            loggedDate: 1471442494795
-            bodyAsBase64: ''
-            body: ''
-            loggedDateString: '2016-08-17T14:01:34Z'
-          responseDefinition:
-            status: 404
-            transformers: []
-            fromConfiguredStub: false
-            transformerParameters: {}
-        meta:
-          total: 9
-        requestJournalDisabled: false
-
-  schemas:
-    contentPattern:
-      oneOf:
-        - description: String equality
-          type: object
-          properties:
-            equalTo:
-              type: boolean
-            caseInsensitive:
-              type: boolean
-          required:
-            - equalTo
-        - description: String contains
-          type: object
-          properties:
-            contains:
-              type: string
-          required:
-            - contains
-        - description: Regular expression match
-          type: object
-          properties:
-            matches:
-              type: string
-          required:
-            - matches
-        - description: Negative regular expression match
-          type: object
-          properties:
-            doesNotMatch:
-              type: string
-          required:
-            - doesNotMatch
-        - description: JSON equality
-          type: object
-          properties:
-            equalToJson:
-              type: string
-          required:
-            - equalToJson
-        - description: JSONPath match
-          type: object
-          properties:
-            matchesJsonPath:
-              type: string
-            ignoreArrayOrder:
-              type: boolean
-            ignoreExtraElements:
-              type: boolean
-          required:
-            - matchesJsonPath
-        - description: XML equality
-          type: object
-          properties:
-            equalToXml:
-              type: string
-          required:
-            - equalToXml
-        - description: XPath match
-          type: object
-          properties:
-            matchesXpath:
-              type: string
-            namespaces:
-              type: object
-            valuePattern:
-              $ref: "#/components/schemas/contentPattern"
-          required:
-            - matchesXpath
-
-    delayDistribution:
-      oneOf:
-        - description: Log normal randomly distributed response delay.
-          type: object
-          properties:
-            median:
-              type: integer
-            sigma:
-              type: number
-            type:
-              enum:
-                - lognormal
-              type: string
-          required:
-            - type
-            - median
-            - sigma
-        - description: Uniformly distributed random response delay.
-          type: object
-          properties:
-            lower:
-              type: integer
-            type:
-              enum:
-                - uniform
-              type: string
-            upper:
-              type: integer
-          required:
-            - type
-            - upper
-            - lower
-
-    globalSettings:
-      allOf:
-        - $ref: "#/components/schemas/delayDistribution"
-        - type: object
-          properties:
-            fixedDelay:
-              type: number
-          example:
-            fixedDelay: 500
-
-    loggedRequest:
-      type: object
-      example:
-        absoluteUrl: http://localhost:56738/received-request/2
-        body: Hello world
-        cookies: {}
-        headers:
-          Connection: keep-alive
-          Host: localhost:56738
-          User-Agent: Apache-HttpClient/4.5.1 (Java/1.7.0_51)
-        method: GET
-        url: /received-request/2
-      properties:
-        absoluteUrl:
-          description: The full URL to match against
-          type: string
-        body:
-          description: Body string to match against
-          type: string
-        cookies:
-          description: 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form'
-          type: object
-        headers:
-          description: 'Header patterns to match against in the <key>: { "<predicate>": "<value>" } form'
-          type: object
-        method:
-          description: The HTTP request method e.g. GET
-          type: string
-        url:
-          description: The path and query to match exactly against
-          type: string
-
+  requestBodies:
     requestPattern:
-      type: object
-      example:
-        bodyPatterns:
-          - equalToJson: '{ "numbers": [1, 2, 3] }'
-        headers:
-          Content-Type: application/json
-        method: POST
-        url: /some/thing
-      properties:
-        basicAuthCredentials:
-          type: object
-          description: Pre-emptive basic auth credentials to match against
-          properties:
-            password:
-              type: string
-            username:
-              type: string
-          required:
-            - username
-            - password
-        bodyPatterns:
-          type: array
-          description: 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form'
-          items:
-            type: object
-        cookies:
-          type: object
-          description: 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form'
-        headers:
-          type: object
-          description: 'Header patterns to match against in the <key>: { "<predicate>": "<value>" } form'
-        method:
-          type: string
-          description: The HTTP request method e.g. GET
-        queryParameters:
-          type: object
-          description: 'Query parameter patterns to match against in the <key>: { "<predicate>": "<value>" } form'
-        url:
-          type: string
-          description: The path and query to match exactly against. Only one of url, urlPattern, urlPath or urlPathPattern may be specified.
-        urlPath:
-          type: string
-          description: The path to match exactly against. Only one of url, urlPattern, urlPath or urlPathPattern may be specified.
-        urlPathPattern:
-          type: string
-          description: The path regex to match against. Only one of url, urlPattern, urlPath or urlPathPattern may be specified.
-        urlPattern:
-          type: string
-          description: The path and query regex to match against. Only one of url, urlPattern, urlPath or urlPathPattern may be specified.
-
-    scenarios:
-      type: object
-      properties:
-        scenarios:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: The scenario ID
-                example: c8d249ec-d86d-48b1-88a8-a660e6848042
-              name:
-                type: string
-                description: The scenario name
-                example: my_scenario
-              possibleStates:
-                type: array
-                items:
-                  default: Started
-                  description: All the states this scenario can be in
-                  type: string
-                example:
-                  - Started
-                  - Step two
-                  - step_3
-              state:
-                type: string
-                default: Started
-                description: The current state of this scenario
-                example: Started
-
-    recordSpec:
-      type: object
-      properties:
-        captureHeaders:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties: false
-            properties:
-              caseInsensitive:
-                type: boolean
-          description: Headers from the request to include in the generated stub mappings, mapped to parameter objects. The only parameter available is "caseInsensitive", which defaults to false
-          example:
-            - Accept: {}
-            - Accept: {}
-              Content-Type:
-                caseInsensitive: true
-        extractBodyCriteria:
-          type: object
-          description: Criteria for extracting response bodies to a separate file instead of including it in the stub mapping
-          example:
-            - binarySizeThreshold: 1 Mb
-              textSizeThreshold: 2 kb
-          properties:
-            binarySizeThreshold:
-              type: string
-              default: '0'
-              description: Size threshold for extracting binary response bodies. Default unit is bytes
-              example:
-                - 56 kb
-                - 10 Mb
-                - 18.2 GB
-                - '255'
-            textSizeThreshold:
-              default: '0'
-              description: Size threshold for extracting text response bodies. Default unit is bytes
-              example:
-                - 56 kb
-                - 10 Mb
-                - 18.2 GB
-                - '255'
-              type: string
-        persist:
-          type: boolean
-          default: true
-          description: Whether to save stub mappings to the file system or just return them
-        repeatsAsScenarios:
-          type: boolean
-          default: true
-          description: When true, duplicate requests will be added to a Scenario. When false, duplicates are discarded
-        requestBodyPattern:
-          type: object
-          description: Control the request body matcher used in generated stub mappings
-          oneOf:
-            - type: object
-              description: Automatically determine matcher based on content type (the default)
-              properties:
-                caseInsensitive:
-                  type: boolean
-                  default: false
-                  description: If equalTo is used, match body use case-insensitive string comparison
-                ignoreArrayOrder:
-                  type: boolean
-                  default: true
-                  description: If equalToJson is used, ignore order of array elements
-                ignoreExtraElements:
-                  type: boolean
-                  default: true
-                  description: If equalToJson is used, matcher ignores extra elements in objects
-                matcher:
-                  type: string
-                  enum:
-                    - auto
-            - type: object
-              description: Always match request bodies using equalTo
-              properties:
-                caseInsensitive:
-                  default: false
-                  description: Match body using case-insensitive string comparison
-                  type: boolean
-                matcher:
-                  enum:
-                    - equalTo
-                  type: string
-            - type: object
-              description: Always match request bodies using equalToJson
-              properties:
-                ignoreArrayOrder:
-                  default: true
-                  description: Ignore order of array elements
-                  type: boolean
-                ignoreExtraElements:
-                  default: true
-                  description: Ignore extra elements in objects
-                  type: boolean
-                matcher:
-                  enum:
-                    - equalToJson
-                  type: string
-            - type: object
-              description: Always match request bodies using equalToXml
-              properties:
-                matcher:
-                  type: string
-                  enum:
-                    - equalToXml
-        transformerParameters:
-          type: object
-          description: List of names of stub mappings transformers to apply to generated stubs
-        transformers:
-          type: array
-          description: Parameters to pass to stub mapping transformers
-          items:
-            type: string
-
-    snapshot:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/recordSpec"
-        - properties:
-            filters:
-              type: object
-              allOf:
-                - properties:
-                    ids:
-                      items:
-                        type: string
-                      type: array
-                  type: object
-                  description: Filter requests for which to create stub mapping
-                - $ref: '#/components/schemas/requestPattern'
-
-    startRecording:
-      allOf:
-        - $ref: '#/components/schemas/recordSpec'
-        - properties:
-            filters:
-              allOf:
-                - $ref: '#/components/schemas/requestPattern'
-                - description: Filter requests for which to create stub mapping
-            targetBaseUrl:
-              type: string
-              description: Target URL when using the record and playback API
-              example: http://example.mocklab.io
-
-    responseDefinition:
-      allOf:
-        - $ref: "#/components/schemas/delayDistribution"
-        - type: object
-          properties:
-            additionalProxyRequestHeaders:
-              type: object
-              description: Extra request headers to send when proxying to another host.
-            base64Body:
-              type: string
-              description: The response body as a base64 encoded string (useful for binary content). Only one of body, base64Body, jsonBody or bodyFileName may be specified.
-            body:
-              type: string
-              description: The response body as a string. Only one of body, base64Body, jsonBody or bodyFileName may be specified.
-            bodyFileName:
-              type: string
-              description: The path to the file containing the response body, relative to the configured file root. Only one of body, base64Body, jsonBody or bodyFileName may be specified.
-            fault:
-              type: string
-              description: The fault to apply (instead of a full, valid response).
-              enum:
-                - CONNECTION_RESET_BY_PEER
-                - EMPTY_RESPONSE
-                - MALFORMED_RESPONSE_CHUNK
-                - RANDOM_DATA_THEN_CLOSE
-            fixedDelayMilliseconds:
-              type: integer
-              description: Number of milliseconds to delay be before sending the response.
-            fromConfiguredStub:
-              type: boolean
-              description: Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.
-            headers:
-              type: object
-              description: Map of response headers to send
-            jsonBody:
-              type: object
-              description: The response body as a JSON object. Only one of body, base64Body, jsonBody or bodyFileName may be specified.
-            proxyBaseUrl:
-              type: string
-              description: The base URL of the target to proxy matching requests to.
-            status:
-              type: integer
-              description: The HTTP status code to be returned
-            statusMessage:
-              type: string
-              description: The HTTP status message to be returned
-            transformerParameters:
-              type: object
-              description: Parameters to apply to response transformers.
-            transformers:
-              type: array
-              description: List of names of transformers to apply to this response.
-              items:
-                type: string
+      content:
+        application/json:
+          schema:
+            $ref: 'schemas/request-pattern.yaml'
+      required: true
 
     stubMapping:
-      type: object
-      properties:
-        id:
-          type: string
-          description: This stub mapping's unique identifier
-        newScenarioState:
-          type: string
-          description: The new state for the scenario to be updated to after this stub is served.
-        persistent:
-          type: boolean
-          description: Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.
-        postServeActions:
-          type: object
-          description: A map of the names of post serve action extensions to trigger and their parameters.
-        metadata:
-          type: object
-          description: Arbitrary metadata to be used for e.g. tagging, documentation. Can also be used to find and remove stubs.
-        priority:
-          type: integer
-          description: This stub mapping's priority relative to others. 1 is highest.
-          minimum: 1
-        request:
-          $ref: '#/components/schemas/requestPattern'
-        requiredScenarioState:
-          type: string
-          description: The required state of the scenario in order for this stub to be matched.
-        response:
-          $ref: "#/components/schemas/responseDefinition"
-        scenarioName:
-          type: string
-          description: The name of the scenario that this stub mapping is part of
+      content:
+        application/json:
+          schema:
+            $ref: 'schemas/stub-mapping.yaml'
+          examples:
+            stubMappingNoId:
+              $ref: "examples/stub-mapping-no-id.yaml"
+  responses:
+    stubMapping:
+      content:
+        application/json:
+          schema:
+            $ref: 'schemas/stub-mapping.yaml'
+          examples:
+            stubMappingWithId:
+              $ref: "examples/stub-mapping-with-id.yaml"
+        description: Created stub mapping
 
-    stubMappings:
-      type: object
-      properties:
-        meta:
-          type: object
-          properties:
-            total:
-              type: integer
-          required:
-            - total
-        mappings:
-          type: array
-          items:
-            $ref: "#/components/schemas/stubMapping"
+    nearMisses:
+      description: Near misses matching criteria
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nearMisses:
+                type: array
+                items:
+                  $ref: "schemas/logged-request.yaml"
+          examples:
+            nearMisses:
+              $ref: 'examples/near-misses.yaml'
