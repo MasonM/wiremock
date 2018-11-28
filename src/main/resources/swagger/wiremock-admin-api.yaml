@@ -17,8 +17,8 @@ tags:
     externalDocs:
       description: User documentation
       url: http://wiremock.org/docs/stubbing/
-  - name: Requests
-    description: Operations on requests
+  - name: Request Journal
+    description: Operations on the request journal
     externalDocs:
       description: User documentation
       url: http://wiremock.org/docs/verifying/
@@ -43,7 +43,7 @@ tags:
 paths:
   /__admin/mappings:
     get:
-      description: Get all stub mappings
+      summary: Get all stub mappings
       tags:
          - Mappings
       parameters:
@@ -72,7 +72,7 @@ paths:
                   $ref: 'examples/stub-mappings.yaml'
           description: All stub mappings
     post:
-      description: Create a new stub mapping
+      summary: Create a new stub mapping
       tags:
          - Mappings
       requestBody:
@@ -81,7 +81,7 @@ paths:
         '201':
           $ref: "#/components/responses/stubMapping"
     delete:
-      description: Delete all stub mappings
+      summary: Delete all stub mappings
       tags:
          - Mappings
       responses:
@@ -90,7 +90,8 @@ paths:
 
   /__admin/mappings/reset:
     post:
-      description: Reset stub mappings (restore to defaults defined back the backing store)
+      summary: Reset stub mappings
+      description: Restores stub mappings to the defaults defined back in the backing store
       tags:
          - Mappings
       responses:
@@ -99,6 +100,7 @@ paths:
 
   /__admin/mappings/save:
     post:
+      summary: Persist stub mappings
       description: Save all persistent stub mappings to the backing store
       tags:
          - Mappings
@@ -116,14 +118,14 @@ paths:
         schema:
           type: string
     get:
-      description: Get a single stub mapping
+      summary: Get stub mapping by ID
       tags:
          - Mappings
       responses:
         '200':
           $ref: "#/components/responses/stubMapping"
     put:
-      description: Update an existing stub mapping
+      summary: Update a stub mapping
       tags:
          - Mappings
       requestBody:
@@ -132,7 +134,7 @@ paths:
         '200':
           $ref: "#/components/responses/stubMapping"
     delete:
-      description: Delete a stub mapping
+      summary: Delete a stub mapping
       tags:
          - Mappings
       responses:
@@ -166,7 +168,7 @@ paths:
 
   /__admin/mappings/remove-by-metadata:
     post:
-      description: Remove stubs by matching on their metadata
+      summary: Delete stub mappings matching metadata
       tags:
         - Mappings
       requestBody:
@@ -183,9 +185,9 @@ paths:
 
   /__admin/requests:
     get:
-      description: Get received requests
+      summary: Get all requests in journal
       tags:
-         - Requests
+         - Request Journal
       parameters:
         - description: The maximum number of results to return
           in: query
@@ -208,18 +210,18 @@ paths:
                   $ref: 'examples/serve-events.yaml'
           description: List of received requests
     delete:
-      description: Delete all received requests
+      summary: Delete all requests in journal
       tags:
-         - Requests
+         - Request Journal
       responses:
         '200':
           description: Successfully deleted
 
   /__admin/requests/{requestId}:
     get:
-      description: Single logged request
+      summary: Get request by ID
       tags:
-         - Requests
+         - Request Journal
       parameters:
         - description: The UUID of the logged request
           in: path
@@ -235,18 +237,19 @@ paths:
 
   /__admin/requests/reset:
     post:
-      description: Empty the request journal
+      summary: Empty the request journal
       tags:
-         - Requests
+         - Request Journal
       responses:
         '200':
           description: Successfully reset
 
   /__admin/requests/count:
     post:
+      summary: Count requests by criteria
       description: Count requests logged in the journal matching the specified criteria
       tags:
-         - Requests
+         - Request Journal
       requestBody:
         $ref: "#/components/requestBodies/requestPattern"
       responses:
@@ -256,9 +259,10 @@ paths:
 
   /__admin/requests/find:
     post:
+      summary: Find requests by criteria
       description: Retrieve details of requests logged in the journal matching the specified criteria
       tags:
-         - Requests
+         - Request Journal
       requestBody:
         $ref: "#/components/requestBodies/requestPattern"
       responses:
@@ -268,9 +272,10 @@ paths:
 
   /__admin/requests/unmatched:
     get:
+      summary: Find unmatched requests
       description: Get details of logged requests that weren't matched by any stub mapping
       tags:
-         - Requests
+         - Request Journal
       responses:
         '200':
           # TODO !include examples/requests.example.json
@@ -288,6 +293,7 @@ paths:
 
   /__admin/near-misses/request:
     post:
+      summary: Find near misses matching specific request
       description: Find at most 3 near misses for closest stub mappings to the specified request
       tags:
          - Near Misses
@@ -306,6 +312,7 @@ paths:
 
   /__admin/near-misses/request-pattern:
     post:
+      summary: Find near misses matching request pattern
       description: Find at most 3 near misses for closest logged requests to the specified request pattern
       tags:
          - Near Misses
@@ -317,7 +324,8 @@ paths:
 
   /__admin/recordings/start:
     post:
-      description: Start recording stub mappings
+      summary: Start recording
+      description: Begin recording stub mappings
       tags:
          - Recordings
       requestBody:
@@ -343,7 +351,8 @@ paths:
 
   /__admin/recordings/stop:
     post:
-      description: Stop recording stub mappings
+      summary: Stop recording
+      description: End recording of stub mappings
       tags:
          - Recordings
       responses:
@@ -359,7 +368,7 @@ paths:
 
   /__admin/recordings/status:
     get:
-      description: Get the recording status (started or stopped)
+      summary: Get recording status
       tags:
          - Recordings
       responses:
@@ -381,7 +390,7 @@ paths:
 
   /__admin/recordings/snapshot:
     post:
-      description: Take a snapshot recording
+      summary: Take a snapshot recording
       tags:
          - Recordings
       requestBody:
@@ -419,7 +428,7 @@ paths:
 
   /__admin/scenarios:
     get:
-      description: Get all scenarios
+      summary: Get all scenarios
       tags:
          - Scenarios
       responses:
@@ -438,7 +447,7 @@ paths:
 
   /__admin/scenarios/reset:
     post:
-      description: Reset the state of all scenarios
+      summary: Reset the state of all scenarios
       tags:
          - Scenarios
       responses:
@@ -447,7 +456,7 @@ paths:
 
   /__admin/settings:
     post:
-      description: Update global settings
+      summary: Update global settings
       tags:
          - System
       requestBody:
@@ -469,6 +478,7 @@ paths:
 
   /__admin/reset:
     post:
+      summary: Reset mappings and request journal
       description: Reset mappings to the default state and reset the request journal
       tags:
          - System
@@ -504,6 +514,7 @@ components:
               $ref: "examples/stub-mapping-no-id.yaml"
   responses:
     stubMapping:
+      description: Created stub mapping
       content:
         application/json:
           schema:
@@ -511,7 +522,6 @@ components:
           examples:
             stubMappingWithId:
               $ref: "examples/stub-mapping-with-id.yaml"
-        description: Created stub mapping
 
     nearMisses:
       description: Near misses matching criteria

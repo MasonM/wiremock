@@ -1,5 +1,5 @@
 oneOf:
-  - description: String equality
+  - title: String equals
     type: object
     properties:
       equalTo:
@@ -8,35 +8,35 @@ oneOf:
         type: boolean
     required:
       - equalTo
-  - description: String contains
+  - title: String contains
     type: object
     properties:
       contains:
         type: string
     required:
       - contains
-  - description: Regular expression match
+  - title: Regular expression match
     type: object
     properties:
       matches:
         type: string
     required:
       - matches
-  - description: Negative regular expression match
+  - title: Negative regular expression match
     type: object
     properties:
       doesNotMatch:
         type: string
     required:
       - doesNotMatch
-  - description: JSON equality
+  - title: JSON equals
     type: object
     properties:
       equalToJson:
         type: string
     required:
       - equalToJson
-  - description: JSONPath match
+  - title: JSONPath match
     type: object
     properties:
       matchesJsonPath:
@@ -47,14 +47,14 @@ oneOf:
         type: boolean
     required:
       - matchesJsonPath
-  - description: XML equality
+  - title: XML equality
     type: object
     properties:
       equalToXml:
         type: string
     required:
       - equalToXml
-  - description: XPath match
+  - title: XPath match
     type: object
     properties:
       matchesXpath:

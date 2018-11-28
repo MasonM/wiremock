@@ -1,5 +1,6 @@
 oneOf:
-  - description: Log normal randomly distributed response delay.
+  - title: Log normal
+    description: Log normal randomly distributed response delay.
     type: object
     properties:
       median:
@@ -10,11 +11,8 @@ oneOf:
         enum:
           - lognormal
         type: string
-    required:
-      - type
-      - median
-      - sigma
-  - description: Uniformly distributed random response delay.
+  - title: Uniform
+    description: Uniformly distributed random response delay.
     type: object
     properties:
       lower:
@@ -25,7 +23,3 @@ oneOf:
         type: string
       upper:
         type: integer
-    required:
-      - type
-      - upper
-      - lower
