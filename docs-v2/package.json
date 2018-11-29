@@ -11,10 +11,10 @@
     "npm-run-all": "^1.7.0",
     "onchange": "^2.2.0",
     "postcss-cli": "^2.5.1",
-    "redoc": "^2.0.0-alpha.40",
+    "redoc": "2.0.0-alpha.40",
     "shx": "0.2.2",
-    "swagger-cli": "^2.2.0",
-    "swagger-ui-dist": "^3.19.4",
+    "swagger-cli": "2.2.0",
+    "swagger-ui-dist": "3.19.4",
     "uglify-js": "^2.6.1"
   },
   "scripts": {

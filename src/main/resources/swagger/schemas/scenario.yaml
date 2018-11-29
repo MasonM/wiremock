@@ -14,13 +14,10 @@ properties:
       default: Started
       description: All the states this scenario can be in
       type: string
-    example:
-      - Started
-      - Step two
-      - step_3
+    example: Started
   state:
     type: string
     default: Started
     description: The current state of this scenario
-    example: Started
+    example: state_2
 

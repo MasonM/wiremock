@@ -1,0 +1,7 @@
+summary: Request pattern to match POST requests to /resource
+value:
+  method: POST
+  url: "/resource"
+  headers:
+    Content-Type:
+      matches: ".*/xml"

@@ -232,8 +232,12 @@ paths:
             type: string
       responses:
         '200':
-          # TODO: examples/request.example.json
           description: OK
+          content:
+            application/json:
+              examples:
+                simpleRequest:
+                  $ref: "examples/request.yaml"
 
   /__admin/requests/reset:
     post:
@@ -254,8 +258,15 @@ paths:
         $ref: "#/components/requestBodies/requestPattern"
       responses:
         '200':
-          # TODO:  !include examples/request-count.example.json
           description: Number of matching requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 4
 
   /__admin/requests/find:
     post:
@@ -267,8 +278,12 @@ paths:
         $ref: "#/components/requestBodies/requestPattern"
       responses:
         '200':
-          # TODO !include examples/requests.example.json
           description: Matching request details
+          content:
+            application/json:
+              examples:
+                simpleRequest:
+                  $ref: "examples/request.yaml"
 
   /__admin/requests/unmatched:
     get:
@@ -278,8 +293,12 @@ paths:
          - Request Journal
       responses:
         '200':
-          # TODO !include examples/requests.example.json
           description: Unmatched request details
+          content:
+            application/json:
+              examples:
+                simpleRequest:
+                  $ref: "examples/request.yaml"
 
   /__admin/requests/unmatched/near-misses:
     get:
@@ -288,8 +307,7 @@ paths:
          - Near Misses
       responses:
         '200':
-          #TODO !include examples/near-misses.example.json
-          description: Top 3 (at most) near misses for each unmatched request
+          $ref: "#/components/responses/nearMisses"
 
   /__admin/near-misses/request:
     post:
@@ -329,22 +347,7 @@ paths:
       tags:
          - Recordings
       requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: 'schemas/record-spec.yaml'
-                - properties:
-                    filters:
-                      allOf:
-                        - $ref: 'schemas/request-pattern.yaml'
-                        - description: Filter requests for which to create stub mapping
-                    targetBaseUrl:
-                      type: string
-                      description: Target URL when using the record and playback API
-                      example: http://example.mocklab.io
-        required: true
-        # TODO !include examples/record-spec.example.json
+        $ref: "#/components/requestBodies/requestPattern"
       responses:
         '200':
           description: Successfully started recording
@@ -364,7 +367,7 @@ paths:
               examples:
                 stubMappings:
                   $ref: 'examples/recorded-stub-mappings.yaml'
-          description: Successfully started recording
+          description: Successfully stopped recording
 
   /__admin/recordings/status:
     get:
@@ -394,26 +397,7 @@ paths:
       tags:
          - Recordings
       requestBody:
-        # TODO !include examples/snapshot-spec.example.json
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - $ref: "schemas/record-spec.yaml"
-                - properties:
-                    filters:
-                      type: object
-                      allOf:
-                        - properties:
-                            ids:
-                              items:
-                                type: string
-                              type: array
-                          type: object
-                          description: Filter requests for which to create stub mapping
-                        - $ref: 'schemas/request-pattern.yaml'
-        required: true
+        $ref: "#/components/requestBodies/snapshotRecording"
       responses:
         '200':
           content:
@@ -422,9 +406,8 @@ paths:
                 $ref: 'schemas/stub-mappings.yaml'
               examples:
                 stubMappings:
-                  $ref: 'examples/stub-mappings.yaml'
+                  $ref: 'examples/recorded-stub-mappings.yaml'
           description: Successfully took a snapshot recording
-          # TODO !include examples/recorded-stub-mappings.example.json
 
   /__admin/scenarios:
     get:
@@ -433,7 +416,6 @@ paths:
          - Scenarios
       responses:
         '200':
-          # TODO !include examples/scenarios.example.json
           content:
             application/json:
               schema:
@@ -498,11 +480,14 @@ paths:
 components:
   requestBodies:
     requestPattern:
+      required: true
       content:
         application/json:
           schema:
             $ref: 'schemas/request-pattern.yaml'
-      required: true
+          examples:
+            simpleRequestPattern:
+              $ref: "examples/request-pattern.yaml"
 
     stubMapping:
       content:
@@ -512,6 +497,51 @@ components:
           examples:
             stubMappingNoId:
               $ref: "examples/stub-mapping-no-id.yaml"
+
+    startRecording:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: 'schemas/record-spec.yaml'
+              - properties:
+                  filters:
+                    allOf:
+                      - $ref: 'schemas/request-pattern.yaml'
+                      - description: Filter requests for which to create stub mapping
+                  targetBaseUrl:
+                    type: string
+                    description: Target URL when using the record and playback API
+                    example: http://example.mocklab.io
+          examples:
+            fullRecordSpec:
+              $ref: "examples/record-spec.yaml"
+
+    snapshotRecording:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+              - $ref: "schemas/record-spec.yaml"
+              - properties:
+                  filters:
+                    type: object
+                    allOf:
+                      - properties:
+                          ids:
+                            type: array
+                            items:
+                              type: string
+                        type: object
+                        description: Filter requests for which to create stub mapping
+                      - $ref: 'schemas/request-pattern.yaml'
+          examples:
+            fullSnapshotSpec:
+              $ref: "examples/snapshot-spec.yaml"
+
   responses:
     stubMapping:
       description: Created stub mapping
