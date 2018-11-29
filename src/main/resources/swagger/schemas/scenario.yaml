@@ -14,7 +14,7 @@ properties:
       default: Started
       description: All the states this scenario can be in
       type: string
-    example: Started
+    example: [ Started, state_1, state_2 ]
   state:
     type: string
     default: Started

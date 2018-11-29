@@ -384,12 +384,11 @@ paths:
                 properties:
                   status:
                     type: string
+                    example: "Stopped"
                     enum:
                       - NeverStarted
                       - Recording
                       - Stopped
-              example:
-                status: "Stopped"
 
   /__admin/recordings/snapshot:
     post:

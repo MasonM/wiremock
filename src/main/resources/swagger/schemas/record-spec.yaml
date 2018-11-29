@@ -10,10 +10,9 @@ properties:
           type: boolean
     description: Headers from the request to include in the generated stub mappings, mapped to parameter objects. The only parameter available is "caseInsensitive", which defaults to false
     example:
-      - Accept: {}
-      - Accept: {}
-        Content-Type:
-          caseInsensitive: true
+      Accept: {}
+      Content-Type:
+        caseInsensitive: true
   extractBodyCriteria:
     type: object
     description: Criteria for extracting response bodies to a separate file instead of including it in the stub mapping
@@ -24,20 +23,12 @@ properties:
       binarySizeThreshold:
         type: string
         default: '0'
-        description: Size threshold for extracting binary response bodies. Default unit is bytes
-        example:
-          - 56 kb
-          - 10 Mb
-          - 18.2 GB
-          - '255'
+        description: Size threshold for extracting binary response bodies. Supports humanized size strings, e.g. "56 Mb". Default unit is bytes.
+        example: 18.2 GB
       textSizeThreshold:
         default: '0'
-        description: Size threshold for extracting text response bodies. Default unit is bytes
-        example:
-          - 56 kb
-          - 10 Mb
-          - 18.2 GB
-          - '255'
+        description: Size threshold for extracting binary response bodies. Supports humanized size strings, e.g. "56 Mb". Default unit is bytes.
+        example: 18.2 GB
         type: string
   persist:
     type: boolean
