@@ -62,6 +62,6 @@ oneOf:
       namespaces:
         type: object
       valuePattern:
-        $ref: "content-pattern.yaml"
+        type: object
     required:
       - matchesXpath

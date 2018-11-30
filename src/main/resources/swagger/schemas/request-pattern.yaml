@@ -3,7 +3,8 @@ example:
   bodyPatterns:
     - equalToJson: '{ "numbers": [1, 2, 3] }'
   headers:
-    Content-Type: application/json
+    Content-Type:
+      equalTo: application/json
   method: POST
   url: /some/thing
 properties:

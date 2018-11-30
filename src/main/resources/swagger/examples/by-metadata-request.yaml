@@ -1,5 +1,3 @@
-summary: Request for stub mapping matching metadata
-value:
-  matchesJsonPath:
-    expression: '$.outer'
-    equalToJson: '{ "inner": 42 }'
+matchesJsonPath:
+  expression: '$.outer'
+  equalToJson: '{ "inner": 42 }'
