@@ -24,7 +24,7 @@
     },
     {
       "name": "Request Journal",
-      "description": "Operations on the request journal",
+      "description": "Logged requests and responses received by the mock service",
       "externalDocs": {
         "description": "User documentation",
         "url": "http://wiremock.org/docs/verifying/"
@@ -32,7 +32,7 @@
     },
     {
       "name": "Near Misses",
-      "description": "Find inexact matches",
+      "description": "Near misses allow querying of received requests or request patterns according to similarity",
       "externalDocs": {
         "description": "User documentation",
         "url": "http://wiremock.org/docs/verifying/#near-misses"
@@ -40,7 +40,7 @@
     },
     {
       "name": "Recordings",
-      "description": "Record and playback",
+      "description": "Stub mapping record and snapshot functions",
       "externalDocs": {
         "description": "User documentation",
         "url": "http://wiremock.org/docs/record-playback/"
@@ -48,7 +48,7 @@
     },
     {
       "name": "Scenarios",
-      "description": "Simulate stateful behavior",
+      "description": "Scenarios support modelling of stateful behaviour",
       "externalDocs": {
         "description": "User documentation",
         "url": "http://wiremock.org/docs/stateful-behaviour/"
